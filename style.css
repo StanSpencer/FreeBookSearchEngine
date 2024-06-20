@@ -1,0 +1,90 @@
+/* Base styles */
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  background-image: url("background.png");
+  background-size: cover;
+}
+
+/* Mobile styles */
+@media (max-width: 767px) {
+  .search-results-container {
+    width: 100%; /* Full width on mobile */
+    height: auto; /* Height will adjust to content on mobile */
+    display: block; /* Display block on mobile to show the content */
+    margin-top: 16px;
+    background-color: #ffffff;
+    border-radius: 4px;
+  }
+
+  .search-box-container {
+    padding: 16px; /* Add some padding on mobile */
+  }
+
+  img {
+    height: auto; /* Allow the image to scale proportionally on mobile */
+  }
+}
+
+/* Desktop styles */
+@media (min-width: 768px) {
+  .search-box-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    text-align: center;
+  }
+
+  .search-results-container {
+    width: 1000px;
+    height: 500px;
+    display: none;
+    overflow-y: auto;
+    margin-top: 16px;
+    background-color: #ffffff;
+    border-radius: 4px;
+    font-size: 18px;
+  }
+
+/* ... existing styles ... */
+
+.result-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 16px;
+}
+
+.cover-image {
+  max-width: 100px;
+  margin-right: 10px;
+}
+
+.result-content {
+  text-align: center;
+  flex: 1; /* Fill available space */
+}
+
+/* ... existing styles ... */
+
+
+  #searchInput {
+    width: 500px;
+  }
+
+  #searchButton {
+    margin-left: 16px;
+  }
+
+  footer {
+    font-size: 18px;
+    text-align: center;
+    margin-top: 24px;
+  }
+}
