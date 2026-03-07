@@ -1,38 +1,203 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Free Book Search Engine</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Free Book Search Engine</title>
+
+<style>
+
+/* Base styles */
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  background-image: url("background.png");
+  background-size: cover;
+  font-family: Arial;
+}
+
+/* Mobile styles */
+@media (max-width: 767px) {
+  .search-results-container {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin-top: 16px;
+    background-color: #ffffff;
+    border-radius: 4px;
+  }
+
+  .search-box-container {
+    padding: 16px;
+  }
+
+  img {
+    height: auto;
+  }
+}
+
+/* Desktop styles */
+@media (min-width: 768px) {
+
+  .search-box-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    text-align: center;
+  }
+
+  .search-results-container {
+    width: 1000px;
+    height: 500px;
+    display: none;
+    overflow-y: auto;
+    margin: 16px auto;
+    background-color: #ffffff;
+    border-radius: 4px;
+    font-size: 18px;
+    padding: 20px;
+  }
+
+  #searchInput {
+    width: 500px;
+  }
+
+  footer {
+    font-size: 18px;
+    text-align: center;
+    margin-top: 24px;
+  }
+}
+
+.result-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 16px;
+}
+
+.cover-image {
+  max-width: 100px;
+  margin-right: 10px;
+}
+
+.result-content {
+  text-align: center;
+  flex: 1;
+}
+
+.search-box{
+  text-align:center;
+  margin-top:10px;
+}
+
+</style>
 </head>
+
 <body>
-    <div class="search-box-container" style="text-align: center;">
-        <h1>Free Book<br>Search Engine</h1>
-        <h4>Search thousands of free public domain books available on Project Gutenberg</h4></div>
-        <div class="search-box" style="text-align: center;">
-            <input type="text" id="searchInput" placeholder="Search by author or title....">
-            <button onclick="searchBooks()">Search</button>
-        </div>
-        <div class="search-results-container" id="searchResults" style="text-align: center;"></div>
-        <div style="text-align: center;">  
-        <footer>Advertisement</footer>
-         <a href="https://go.fiverr.com/visit/?bta=949077&brand=fiverrmarketplace"><img src="Fiverr.png" alt="Ad for Fiverr Marketplace" 
-         style="width:200px;"></a><br>
-         <h4>Try the <a href="https://go.fiverr.com/visit/?bta=949077&brand=fiverrmarketplace">Fiverr</a> marketplace!</h4>
-         </div>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="search.js"></script>
-     <script>
-        // Add event listener for Enter key press on the search input element
-        document.getElementById('searchInput').addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault(); // Prevent form submission on Enter key press
-                searchBooks();
-            }
-        });
-    </script>
+
+<div class="search-box-container">
+<h1>Free Book<br>Search Engine</h1>
+<h4>Search thousands of free public domain books available on Project Gutenberg</h4>
+</div>
+
+<div class="search-box">
+<input type="text" id="searchInput" placeholder="Search by author or title....">
+<button onclick="searchBooks()">Search</button>
+</div>
+
+<div class="search-results-container" id="searchResults"></div>
+
+<div style="text-align:center;">
+<footer>Advertisement</footer>
+<a href="image">
+<img src="image" alt="Ad" style="width:200px;">
+</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+
+function searchBooks() {
+  const query = document.getElementById('searchInput').value;
+
+  axios
+    .get(`https://gutendex.com/books?search=${query}`)
+    .then(response => {
+      const books = response.data.results;
+      displaySearchResults(books);
+    })
+    .catch(error => {
+      console.error('Error occurred during search:', error);
+    });
+}
+
+function displaySearchResults(books) {
+
+  const searchResultsContainer = document.getElementById('searchResults');
+  searchResultsContainer.innerHTML = '';
+
+  if (books.length === 0) {
+    searchResultsContainer.innerHTML = 'No results found.';
+    searchResultsContainer.style.display = 'block';
+    return;
+  }
+
+  searchResultsContainer.style.display = 'block';
+
+  books.forEach(book => {
+
+    const resultItem = document.createElement('div');
+    resultItem.classList.add('result-item');
+
+    if (book.formats && book.formats['image/jpeg']) {
+      const coverImage = document.createElement('img');
+      coverImage.src = book.formats['image/jpeg'];
+      coverImage.alt = 'Book Cover';
+      coverImage.classList.add('cover-image');
+      resultItem.appendChild(coverImage);
+    }
+
+    const resultContent = document.createElement('div');
+    resultContent.classList.add('result-content');
+
+    const bookLink = document.createElement('a');
+    bookLink.href = `https://www.gutenberg.org/ebooks/${book.id}`;
+    bookLink.target = "_blank";
+    bookLink.textContent = book.title;
+
+    resultContent.appendChild(bookLink);
+
+    if (book.subjects && book.subjects.length > 0) {
+      const subjectsInfo = document.createElement('p');
+      subjectsInfo.textContent = `Subject(s): ${book.subjects.join(', ')}`;
+      resultContent.appendChild(subjectsInfo);
+    }
+
+    resultItem.appendChild(resultContent);
+    searchResultsContainer.appendChild(resultItem);
+
+  });
+
+}
+
+/* Enter key search */
+document.getElementById('searchInput').addEventListener('keydown', function(event) {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    searchBooks();
+  }
+});
+
+</script>
+
 </body>
 </html>
-
-
-
